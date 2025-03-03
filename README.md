@@ -16,11 +16,11 @@ PorkStreams, ad-free Android application for watching nba streams on Fire TV dev
 
 2. Download the latest release APK file:
    ```
-   5283234
+   7874913
    ```
    or
    ```
-   https://github.com/nickdeupree/TopStreamsWrapper/releases/download/1.0/PorkStreams.v1.0.apk
+   [Download APK](https://github.com/nickdeupree/PorkStreams/releases/download/1.1/PorkStreams.v1.1.apk)
    ```
 
 4. When prompted, allow the installation of applications from unknown sources
