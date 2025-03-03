@@ -57,6 +57,11 @@ At the end of the day I feel like I have a good understanding on how the app fun
 behind the scenes. Maybe not the adblock part though...
 If I did anything wrong (*context below*) I'll private this.
 
+## To-Do
+- fix fubo redirect when clicking game
+- store and show team logos
+- link to espn game stats
+- multicast? (is this possible??)
 ---
 
 *Note: This application is for educational purposes only. The developers do not host or provide any of the stream content.*
