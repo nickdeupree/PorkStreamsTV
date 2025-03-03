@@ -55,6 +55,7 @@ I had the vision & often times the idea on how to implement a feature. The agent
 the manual task. Of course it would create implementation I did not mention without me. 
 At the end of the day I feel like I have a good understanding on how the app functions and the
 behind the scenes. Maybe not the adblock part though...
+If I did anything wrong (*context below*) I'll private this.
 
 ---
 
