@@ -6,9 +6,9 @@ import android.view.WindowManager
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity"
@@ -28,27 +28,70 @@ class MainActivity : ComponentActivity() {
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         
+        // Create settings manager
+        val settingsManager = SettingsManager(applicationContext)
+        
         setContent {
-            AppContainer()
+            // Collect theme preference from settings
+            val isDarkTheme by settingsManager.isDarkTheme.collectAsState(initial = true)
+            val useWebViewer by settingsManager.useWebViewer.collectAsState(initial = false)
+            
+            // Apply theme and render app content
+            PorkStreamsTheme(darkTheme = isDarkTheme) {
+                AppContainer(
+                    isDarkTheme = isDarkTheme,
+                    useWebViewer = useWebViewer,
+                    onToggleTheme = {
+                        lifecycleScope.launch {
+                            settingsManager.toggleTheme()
+                        }
+                    },
+                    onToggleWebViewer = {
+                        lifecycleScope.launch {
+                            settingsManager.toggleWebViewer()
+                        }
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun AppContainer() {
+fun AppContainer(
+    isDarkTheme: Boolean,
+    useWebViewer: Boolean,
+    onToggleTheme: () -> Unit,
+    onToggleWebViewer: () -> Unit
+) {
     val (selectedGame, setSelectedGame) = remember { mutableStateOf<Game?>(null) }
     
     if (selectedGame == null) {
-        // Show game selector screen
-        GameSelectorScreen { game ->
-            // When a game is selected, update the state
-            setSelectedGame(game)
-        }
-    } else {
-        // Show WebView with the selected game
-        WebViewScreen(
-            streamUrl = selectedGame.getStreamUrl(),
-            onBackToSelection = { setSelectedGame(null) }
+        // Show main screen with game selector
+        MainScreen(
+            isDarkTheme = isDarkTheme,
+            useWebViewer = useWebViewer,
+            onToggleTheme = onToggleTheme,
+            onToggleWebViewer = onToggleWebViewer,
+            onGameSelected = { game ->
+                setSelectedGame(game)
+            }
         )
+    } else {
+        // Show the appropriate player screen based on user preference
+        if (useWebViewer) {
+            print(selectedGame)
+            // Use WebView to load the video on TopStreams
+            WebViewScreen(
+                streamUrl = "https://topstreams.info/nba/${selectedGame.homeTeam.lowercase()}",
+                onBackToSelection = { setSelectedGame(null) }
+            )
+        } else {
+            // Show the regular video player
+            VideoPlayerScreen(
+                game = selectedGame,
+                onBackToSelection = { setSelectedGame(null) }
+            )
+        }
     }
 }
