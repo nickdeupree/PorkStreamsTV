@@ -47,6 +47,15 @@ PorkStreams, ad-free Android application for watching nba streams on Fire TV dev
 
 This app does not collect any user data. It simply provides a wrapper for existing streams.
 
+## Development Process
+I made this app to test the functionality of github copilot agent mode. 90% of the code I would 
+say is written by the agent. It took me a total of 6 hours of non stop work to complete this.
+It was interesting not coding. Instead I acted as a technical manager I would say. 
+I had the vision & often times the idea on how to implement a feature. The agent would just do
+the manual task. Of course it would create implementation I did not mention without me. 
+At the end of the day I feel like I have a good understanding on how the app functions and the
+behind the scenes. Maybe not the adblock part though...
+
 ---
 
 *Note: This application is for educational purposes only. The developers do not host or provide any of the stream content.*
