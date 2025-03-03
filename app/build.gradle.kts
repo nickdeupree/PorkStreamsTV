@@ -8,6 +8,15 @@ android {
     namespace = "com.topstreams.firetv"
     compileSdk = 35
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("release.keystore")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "your_keystore_password"
+            keyAlias = "topstreams"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "your_key_password"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.topstreams.firetv"
         minSdk = 21
@@ -19,7 +28,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("debug") // Use debug signing config for testing
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -50,6 +61,13 @@ dependencies {
     implementation(libs.androidx.tv.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.material3.android)
+    
+    // Network and parsing dependencies
+    implementation(libs.okhttp)
+    implementation(libs.jsoup)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
