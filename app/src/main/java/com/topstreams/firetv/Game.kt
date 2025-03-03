@@ -35,6 +35,16 @@ data class Game(
         // TopStreams uses the home team name in lowercase for the stream URL
         return "https://topstreams.info/nba/${homeTeam.lowercase()}"
     }
+    
+    // This function will be used to extract the direct stream URL
+    suspend fun getDirectStreamUrl(): String? {
+        // Default pattern for NBA streams on TopStreams
+        val defaultStreamUrl = "https://nbalpng.akamaized.net/live-pz/a/hls-wv-sd/"
+        
+        // The actual extraction will happen in the VideoPlayerScreen
+        // This is just a placeholder method that we'll expand on
+        return null
+    }
 
     fun isGameLive(): Boolean {
         val now = Date()

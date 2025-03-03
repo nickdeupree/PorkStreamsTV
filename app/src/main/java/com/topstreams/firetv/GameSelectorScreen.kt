@@ -1,6 +1,7 @@
 package com.topstreams.firetv
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,22 +12,24 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
 @Composable
-fun GameSelectorScreen(onGameSelected: (Game) -> Unit) {
+fun GameSelectorScreen(
+    onGameSelected: (Game) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val gameRepository = remember { GameRepository() }
     var games by remember { mutableStateOf(emptyList<Game>()) }
     val scope = rememberCoroutineScope()
+    var selectedGameId by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -51,74 +54,78 @@ fun GameSelectorScreen(onGameSelected: (Game) -> Unit) {
     val finalGames = sortedGames.filter { it.gameStatus == GameStatus.FINAL }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF0C1015))
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "PorkStreams",
-                color = Color.White,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 24.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Live Games
-                if (liveGames.isNotEmpty()) {
-                    item {
-                        Text(
-                            text = "Live",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-                    }
-                    items(liveGames) { game ->
-                        GameCard(game = game, onClick = { onGameSelected(game) })
-                    }
+            // Live Games
+            if (liveGames.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Live",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
                 }
-
-                // Upcoming Games
-                if (upcomingGames.isNotEmpty()) {
-                    item {
-                        Text(
-                            text = "Upcoming",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-                    }
-                    items(upcomingGames) { game ->
-                        GameCard(game = game, onClick = { onGameSelected(game) })
-                    }
+                items(liveGames) { game ->
+                    GameCard(
+                        game = game,
+                        isSelected = game.gameId == selectedGameId,
+                        onClick = { 
+                            selectedGameId = game.gameId
+                            onGameSelected(game)
+                        }
+                    )
                 }
+            }
 
-                // Final Games
-                if (finalGames.isNotEmpty()) {
-                    item {
-                        Text(
-                            text = "Final",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-                    }
-                    items(finalGames) { game ->
-                        GameCard(game = game, onClick = { onGameSelected(game) })
-                    }
+            // Upcoming Games
+            if (upcomingGames.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Upcoming",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                }
+                items(upcomingGames) { game ->
+                    GameCard(
+                        game = game,
+                        isSelected = game.gameId == selectedGameId,
+                        onClick = { 
+                            selectedGameId = game.gameId
+                            onGameSelected(game)
+                        }
+                    )
+                }
+            }
+
+            // Final Games
+            if (finalGames.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Final",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                }
+                items(finalGames) { game ->
+                    GameCard(
+                        game = game,
+                        isSelected = game.gameId == selectedGameId,
+                        onClick = { 
+                            selectedGameId = game.gameId
+                            onGameSelected(game)
+                        }
+                    )
                 }
             }
         }
@@ -126,16 +133,28 @@ fun GameSelectorScreen(onGameSelected: (Game) -> Unit) {
 }
 
 @Composable
-fun GameCard(game: Game, onClick: () -> Unit) {
+fun GameCard(game: Game, isSelected: Boolean, onClick: () -> Unit) {
+    val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.5
+    
+    val cardColor = if (game.isLive) {
+        if (isDarkTheme) AppColors.liveGameDark else AppColors.liveGameLight
+    } else {
+        if (isDarkTheme) AppColors.cardDark else AppColors.cardLight
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .then(
+                if (isSelected) 
+                    Modifier.border(width = 2.dp, color = Color.Red, shape = RoundedCornerShape(12.dp))
+                else 
+                    Modifier
+            ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (game.isLive) Color(0xFF8B0000) else Color(0xFF222632)
-        )
+        colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Column(
             modifier = Modifier
@@ -150,7 +169,7 @@ fun GameCard(game: Game, onClick: () -> Unit) {
                 Column {
                     Text(
                         text = game.getMatchupTitle(),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
@@ -159,18 +178,18 @@ fun GameCard(game: Game, onClick: () -> Unit) {
 
                     Text(
                         text = game.getFormattedDate(),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp
                     )
 
                     Text(
                         text = game.getFormattedTime(),
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                         fontSize = 12.sp
                     )
                     Text(
                         text = game.gameStatus.toString(),
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                         fontSize = 12.sp
                     )
                 }

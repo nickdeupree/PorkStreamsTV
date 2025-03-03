@@ -68,6 +68,17 @@ dependencies {
     implementation(libs.jsoup)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     
+    // Media3 (ExoPlayer) dependencies for video playback
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-exoplayer-hls:1.2.1")  // HLS support
+    implementation("androidx.media3:media3-ui:1.2.1")             // UI components
+    implementation("androidx.media3:media3-common:1.2.1")
+
+    implementation("androidx.compose.material:material-icons-extended:1.6.3")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences-core:1.0.0")
+
+    
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
