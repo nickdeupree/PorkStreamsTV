@@ -1,16 +1,20 @@
 package com.topstreams.firetv
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Videocam
-import androidx.compose.material.icons.filled.Web
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -21,18 +25,33 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun AppDrawer(
     isDarkTheme: Boolean,
-    useWebViewer: Boolean,
     onToggleTheme: () -> Unit,
-    onToggleWebViewer: () -> Unit,
-    onCloseDrawer: () -> Unit
+    onCloseDrawer: () -> Unit,
+    isDrawerOpen: Boolean = true
 ) {
+    // Handle back button press to close drawer
+    BackHandler(onBack = onCloseDrawer)
+    
     val backgroundColor = if (isDarkTheme) AppColors.drawerBackgroundDark else AppColors.drawerBackgroundLight
     val textColor = if (isDarkTheme) Color.White else Color.Black
+    
+    // Create a focus requester to automatically focus the drawer when opened
+    val focusRequester = remember { FocusRequester() }
+    
+    // Request focus when drawer is opened
+    LaunchedEffect(isDrawerOpen) {
+        if (isDrawerOpen){
+           focusRequester.requestFocus()
+        }
+    }
 
     Surface(
         modifier = Modifier
             .fillMaxHeight()
-            .width(300.dp),
+            .width(300.dp)
+            // Make the entire drawer focusable to capture remote navigation events
+            .focusRequester(focusRequester)
+            .focusable(),
         color = backgroundColor
     ) {
         Column(
@@ -83,7 +102,9 @@ fun AppDrawer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onToggleTheme() }
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = 12.dp)
+                    // Make navigation item focusable for TV remote
+                    .focusable(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -96,29 +117,6 @@ fun AppDrawer(
                 
                 Text(
                     text = if (isDarkTheme) "Switch to Light Mode" else "Switch to Dark Mode",
-                    color = textColor,
-                    fontSize = 16.sp
-                )
-            }
-            
-            // WebViewer Toggle
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onToggleWebViewer() }
-                    .padding(vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = if (useWebViewer) Icons.Default.Web else Icons.Default.Videocam,
-                    contentDescription = "Toggle WebViewer",
-                    tint = if (isDarkTheme) Color.White else Color.Black
-                )
-                
-                Spacer(modifier = Modifier.width(16.dp))
-                
-                Text(
-                    text = if (useWebViewer) "Use Regular Player" else "Use WebView Player",
                     color = textColor,
                     fontSize = 16.sp
                 )

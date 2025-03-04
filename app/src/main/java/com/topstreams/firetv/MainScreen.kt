@@ -21,7 +21,6 @@ fun MainScreen(
     isDarkTheme: Boolean,
     useWebViewer: Boolean,
     onToggleTheme: () -> Unit,
-    onToggleWebViewer: () -> Unit,
     onGameSelected: (Game) -> Unit
 ) {
     // Drawer state
@@ -34,9 +33,7 @@ fun MainScreen(
         drawerContent = {
             AppDrawer(
                 isDarkTheme = isDarkTheme,
-                useWebViewer = useWebViewer,
                 onToggleTheme = onToggleTheme,
-                onToggleWebViewer = onToggleWebViewer,
                 onCloseDrawer = { scope.launch { drawerState.close() } }
             )
         }

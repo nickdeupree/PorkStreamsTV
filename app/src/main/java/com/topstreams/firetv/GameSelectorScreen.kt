@@ -49,7 +49,7 @@ fun GameSelectorScreen(
         })
 
     // Group the games
-    val liveGames = sortedGames.filter { it.isLive }
+    val liveGames = sortedGames.filter { it.gameStatus == GameStatus.LIVE }
     val upcomingGames = sortedGames.filter { it.gameStatus == GameStatus.UPCOMING || it.gameStatus == GameStatus.PREGAME }
     val finalGames = sortedGames.filter { it.gameStatus == GameStatus.FINAL }
 

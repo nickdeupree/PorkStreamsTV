@@ -34,21 +34,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             // Collect theme preference from settings
             val isDarkTheme by settingsManager.isDarkTheme.collectAsState(initial = true)
-            val useWebViewer by settingsManager.useWebViewer.collectAsState(initial = false)
             
             // Apply theme and render app content
             PorkStreamsTheme(darkTheme = isDarkTheme) {
                 AppContainer(
                     isDarkTheme = isDarkTheme,
-                    useWebViewer = useWebViewer,
                     onToggleTheme = {
                         lifecycleScope.launch {
                             settingsManager.toggleTheme()
-                        }
-                    },
-                    onToggleWebViewer = {
-                        lifecycleScope.launch {
-                            settingsManager.toggleWebViewer()
                         }
                     }
                 )
@@ -60,9 +53,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppContainer(
     isDarkTheme: Boolean,
-    useWebViewer: Boolean,
-    onToggleTheme: () -> Unit,
-    onToggleWebViewer: () -> Unit
+    onToggleTheme: () -> Unit
 ) {
     val (selectedGame, setSelectedGame) = remember { mutableStateOf<Game?>(null) }
     
@@ -70,28 +61,17 @@ fun AppContainer(
         // Show main screen with game selector
         MainScreen(
             isDarkTheme = isDarkTheme,
-            useWebViewer = useWebViewer,
             onToggleTheme = onToggleTheme,
-            onToggleWebViewer = onToggleWebViewer,
+            useWebViewer = true,
             onGameSelected = { game ->
                 setSelectedGame(game)
             }
         )
     } else {
-        // Show the appropriate player screen based on user preference
-        if (useWebViewer) {
-            print(selectedGame)
-            // Use WebView to load the video on TopStreams
-            WebViewScreen(
-                streamUrl = "https://topstreams.info/nba/${selectedGame.homeTeam.lowercase()}",
-                onBackToSelection = { setSelectedGame(null) }
-            )
-        } else {
-            // Show the regular video player
-            VideoPlayerScreen(
-                game = selectedGame,
-                onBackToSelection = { setSelectedGame(null) }
-            )
-        }
+        // Always use WebView to load the video on TopStreams
+        WebViewScreen(
+            streamUrl = selectedGame.getStreamUrl(),
+            onBackToSelection = { setSelectedGame(null) }
+        )
     }
 }
