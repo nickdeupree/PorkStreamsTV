@@ -29,8 +29,10 @@ fun AppDrawer(
     onCloseDrawer: () -> Unit,
     isDrawerOpen: Boolean = true
 ) {
-    // Handle back button press to close drawer
-    BackHandler(onBack = onCloseDrawer)
+    // Only handle back button press when drawer is actually open
+    if (isDrawerOpen) {
+        BackHandler(onBack = onCloseDrawer)
+    }
     
     val backgroundColor = if (isDarkTheme) AppColors.drawerBackgroundDark else AppColors.drawerBackgroundLight
     val textColor = if (isDarkTheme) Color.White else Color.Black
@@ -38,10 +40,10 @@ fun AppDrawer(
     // Create a focus requester to automatically focus the drawer when opened
     val focusRequester = remember { FocusRequester() }
     
-    // Request focus when drawer is opened
+    // Only request focus when drawer is actually open
     LaunchedEffect(isDrawerOpen) {
-        if (isDrawerOpen){
-           focusRequester.requestFocus()
+        if (isDrawerOpen) {
+            focusRequester.requestFocus()
         }
     }
 
@@ -49,9 +51,16 @@ fun AppDrawer(
         modifier = Modifier
             .fillMaxHeight()
             .width(300.dp)
-            // Make the entire drawer focusable to capture remote navigation events
-            .focusRequester(focusRequester)
-            .focusable(),
+            // Only make the drawer focusable when it's actually open
+            .then(
+                if (isDrawerOpen) {
+                    Modifier
+                        .focusRequester(focusRequester)
+                        .focusable()
+                } else {
+                    Modifier
+                }
+            ),
         color = backgroundColor
     ) {
         Column(
@@ -97,14 +106,19 @@ fun AppDrawer(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             
-            // Theme Toggle
+            // Theme Toggle - only make it interactive when drawer is open
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onToggleTheme() }
-                    .padding(vertical = 12.dp)
-                    // Make navigation item focusable for TV remote
-                    .focusable(),
+                    .then(
+                        if (isDrawerOpen) {
+                            Modifier.clickable { onToggleTheme() }
+                                .focusable()
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

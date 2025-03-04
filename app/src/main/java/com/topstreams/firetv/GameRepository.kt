@@ -8,6 +8,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.text.SimpleDateFormat
 import java.util.*
+import android.util.Log
 
 
 enum class GameStatus {
@@ -98,6 +99,12 @@ class GameRepository {
         
         val twoHoursThirtyMinsInMillis = 2 * 60 * 60 * 1000 + 30 * 60 * 1000
         val gameEndTime = Date(gameStartTime.time + twoHoursThirtyMinsInMillis)
+
+        Log.d("GameRepository", "Game Start Time: $gameStartTime")
+        Log.d("GameRepository", "Game End Time: $gameEndTime")
+        Log.d("GameRepository", "Current Time: $currentTime")
+        Log.d("GameRepository", "Game Status: ${statusElement.text()}")
+        
         
         val gameStatus = when {
             currentTime.before(gameStartTime) -> GameStatus.UPCOMING

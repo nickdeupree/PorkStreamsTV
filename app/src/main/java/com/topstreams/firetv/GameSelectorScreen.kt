@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import android.util.Log
 
 @Composable
 fun GameSelectorScreen(
@@ -34,6 +35,7 @@ fun GameSelectorScreen(
     LaunchedEffect(Unit) {
         scope.launch {
             games = gameRepository.getUpcomingGames()
+            Log.d("GameSelectorScreen", "Games loaded: $games")
         }
     }
 
@@ -52,7 +54,11 @@ fun GameSelectorScreen(
     val liveGames = sortedGames.filter { it.gameStatus == GameStatus.LIVE }
     val upcomingGames = sortedGames.filter { it.gameStatus == GameStatus.UPCOMING || it.gameStatus == GameStatus.PREGAME }
     val finalGames = sortedGames.filter { it.gameStatus == GameStatus.FINAL }
-
+    LaunchedEffect(liveGames, upcomingGames, finalGames){
+        Log.d("GameSelectorScreen", "liveGames: $liveGames")
+        Log.d("GameSelectorScreen", "upcomingGames: $upcomingGames")
+        Log.d("GameSelectorScreen", "finalGames: $finalGames")
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
