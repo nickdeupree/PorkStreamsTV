@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+.env
+.devProcess/topstreamsCardHTML.txt
+.devProcess/topstreamsHTML.txt
+.github/prompts/app.prompt.md
+.github/prompts/features.prompt.md
+.vscode/app.prompt.md
+app/.gitignore
+app/release.keystore
