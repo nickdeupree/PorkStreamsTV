@@ -22,7 +22,9 @@ fun MainScreen(
     isDarkTheme: Boolean,
     useWebViewer: Boolean,
     onToggleTheme: () -> Unit,
-    onGameSelected: (Game) -> Unit
+    onGameSelected: (Game) -> Unit,
+    onTeamSelected: (NbaTeam) -> Unit,
+    onViewAllTeams: () -> Unit
 ) {
     // Drawer state
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -100,9 +102,11 @@ fun MainScreen(
                 )
             }
         ) { paddingValues ->
-            // Main content - Game selector
+            // Main content - Game selector with additional team functionality
             GameSelectorScreen(
                 onGameSelected = onGameSelected,
+                onTeamSelected = onTeamSelected,
+                onViewAllTeams = onViewAllTeams,
                 modifier = Modifier.padding(paddingValues)
             )
         }

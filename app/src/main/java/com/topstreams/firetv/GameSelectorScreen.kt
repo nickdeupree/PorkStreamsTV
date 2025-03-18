@@ -5,17 +5,20 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,17 +28,24 @@ import android.util.Log
 @Composable
 fun GameSelectorScreen(
     onGameSelected: (Game) -> Unit,
+    onTeamSelected: (NbaTeam) -> Unit,
+    onViewAllTeams: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val gameRepository = remember { GameRepository() }
+    val favoritesRepository = remember { FavoritesRepository(context) }
     var games by remember { mutableStateOf(emptyList<Game>()) }
+    var favoriteTeams by remember { mutableStateOf(emptyList<NbaTeam>()) }
     val scope = rememberCoroutineScope()
     var selectedGameId by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         scope.launch {
             games = gameRepository.getUpcomingGames()
+            favoriteTeams = favoritesRepository.getFavoriteTeams()
             Log.d("GameSelectorScreen", "Games loaded: $games")
+            Log.d("GameSelectorScreen", "Favorite teams loaded: ${favoriteTeams.size}")
         }
     }
 
@@ -54,11 +64,7 @@ fun GameSelectorScreen(
     val liveGames = sortedGames.filter { it.gameStatus == GameStatus.LIVE }
     val upcomingGames = sortedGames.filter { it.gameStatus == GameStatus.UPCOMING || it.gameStatus == GameStatus.PREGAME }
     val finalGames = sortedGames.filter { it.gameStatus == GameStatus.FINAL }
-    LaunchedEffect(liveGames, upcomingGames, finalGames){
-        Log.d("GameSelectorScreen", "liveGames: $liveGames")
-        Log.d("GameSelectorScreen", "upcomingGames: $upcomingGames")
-        Log.d("GameSelectorScreen", "finalGames: $finalGames")
-    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -69,6 +75,65 @@ fun GameSelectorScreen(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // View All Teams Button
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "NBA Teams",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+
+                    Button(
+                        onClick = onViewAllTeams,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.List,
+                            contentDescription = "View all teams"
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("View All Teams")
+                    }
+                }
+            }
+
+            // Favorites Section
+            if (favoriteTeams.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Favorite Teams",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        items(favoriteTeams) { team ->
+                            FavoriteTeamItem(team = team, onClick = { onTeamSelected(team) })
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider()
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
             // Live Games
             if (liveGames.isNotEmpty()) {
                 item {
@@ -133,6 +198,59 @@ fun GameSelectorScreen(
                         }
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun FavoriteTeamItem(team: NbaTeam, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .width(120.dp)
+            .height(120.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(MaterialTheme.colorScheme.primary, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = team.abbreviation,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(
+                    text = team.name,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    maxLines = 1
+                )
             }
         }
     }

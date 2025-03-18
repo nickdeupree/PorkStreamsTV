@@ -50,28 +50,59 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+sealed class AppScreen {
+    object GameSelector : AppScreen()
+    object TeamList : AppScreen()
+    data class StreamView(val streamUrl: String) : AppScreen()
+}
+
 @Composable
 fun AppContainer(
     isDarkTheme: Boolean,
     onToggleTheme: () -> Unit
 ) {
-    val (selectedGame, setSelectedGame) = remember { mutableStateOf<Game?>(null) }
+    // Current screen state
+    var currentScreen by remember { mutableStateOf<AppScreen>(AppScreen.GameSelector) }
     
-    if (selectedGame == null) {
-        // Show main screen with game selector
-        MainScreen(
-            isDarkTheme = isDarkTheme,
-            onToggleTheme = onToggleTheme,
-            useWebViewer = true,
-            onGameSelected = { game ->
-                setSelectedGame(game)
-            }
-        )
-    } else {
-        // Always use WebView to load the video on TopStreams
-        WebViewScreen(
-            streamUrl = selectedGame.getStreamUrl(),
-            onBackToSelection = { setSelectedGame(null) }
-        )
+    when (val screen = currentScreen) {
+        is AppScreen.GameSelector -> {
+            // Show main screen with game selector
+            MainScreen(
+                isDarkTheme = isDarkTheme,
+                onToggleTheme = onToggleTheme,
+                useWebViewer = true,
+                onGameSelected = { game ->
+                    currentScreen = AppScreen.StreamView(game.getStreamUrl())
+                },
+                onTeamSelected = { team ->
+                    currentScreen = AppScreen.StreamView(team.streamUrl)
+                },
+                onViewAllTeams = {
+                    currentScreen = AppScreen.TeamList
+                }
+            )
+        }
+        
+        is AppScreen.TeamList -> {
+            // Show the NBA team list screen
+            TeamListScreen(
+                onTeamSelected = { team ->
+                    currentScreen = AppScreen.StreamView(team.streamUrl)
+                },
+                onBackPressed = {
+                    currentScreen = AppScreen.GameSelector
+                }
+            )
+        }
+        
+        is AppScreen.StreamView -> {
+            // Show WebView with the stream URL
+            WebViewScreen(
+                streamUrl = screen.streamUrl,
+                onBackToSelection = { 
+                    currentScreen = AppScreen.GameSelector
+                }
+            )
+        }
     }
 }
