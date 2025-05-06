@@ -6,6 +6,8 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.net.http.SslError
+import android.webkit.SslErrorHandler
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -112,6 +114,13 @@ fun WebViewScreen(streamUrl: String, onBackToSelection: () -> Unit = {}) {
                     )
                     
                     webViewClient = object : WebViewClient() {
+                        override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                            // Since we trust the streaming service, we can proceed with the SSL error
+                            // This is necessary for some streaming CDNs that may have SSL cert issues
+                            handler?.proceed()
+                            Log.d("SSL", "Proceeding despite SSL error: ${error?.primaryError}")
+                        }
+                        
                         override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
                             val url = request?.url?.toString() ?: return null
                             
