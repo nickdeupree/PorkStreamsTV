@@ -140,7 +140,7 @@ fun AppDrawer(
             
             // App Version
             Text(
-                text = "Version 1.4",
+                text = "Version 1.5",
                 color = if (isDarkTheme) Color.Gray else Color.DarkGray,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
