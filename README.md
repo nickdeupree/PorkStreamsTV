@@ -16,10 +16,10 @@ PorkStreams, ad-free Android application for watching nba streams on Fire TV dev
 
 2. Download the latest release APK file:
    ```
-   Downloader Code: 6173450
+   Downloader Code: 2989507
    ```
    or
-   [Download APK](https://github.com/nickdeupree/PorkStreamsTV/releases/download/1.4/PorkStreams.1.4.apk)
+   [Download APK](https://github.com/nickdeupree/PorkStreamsTV/releases/download/1.6/PorkStreams.1.6.apk)
 
 4. When prompted, allow the installation of applications from unknown sources
    
