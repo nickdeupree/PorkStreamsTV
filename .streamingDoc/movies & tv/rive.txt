@@ -1,0 +1,21 @@
+owdown on all the methods, request formats, and both required and optional parameters.
+1. Movie Embed
+
+TmdbId is required from The Movie Database API.
+Endpoint
+https://rivestream.org/embed?type=movie&id={tmdbId}
+Examples
+https://rivestream.org/embed?type=movie&id=533535
+https://rivestream.org/embed?type=movie&id=278
+Code Examples
+<iframe src="https://rivestream.org/embed?type=movie&id=533535" allowfullscreen ></iframe>
+2. Tv Show Embed
+
+TmdbId is required from The Movie Database API. season and episode number should not be empty.
+Endpoint
+https://rivestream.org/embed?type=tv&id={tmdbId}&season={season}&episode={episode}
+Examples
+https://rivestream.org/embed?type=tv&id=1396&season=1&episode=1
+https://rivestream.org/embed?type=tv&id=1399&season=1&episode=1
+Code Examples
+<iframe src="https://rivestream.org/embed?type=tv&id=1396&season=1&episode=1" allowfullscreen ></iframe>

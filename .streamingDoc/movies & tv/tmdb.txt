@@ -1,0 +1,93 @@
+TMDB API Documentation
+======================
+Source: https://developer.themoviedb.org/docs/getting-started
+
+## Overview
+The Movie Database (TMDB) API provides access to movie, TV show, actor, and image data.
+Free to use for non-commercial purposes with TMDB attribution required.
+
+## Base URL
+https://api.themoviedb.org/3/
+
+## Authentication
+- API Key (query param):  ?api_key=YOUR_API_KEY
+- Bearer Token (header):  Authorization: Bearer YOUR_ACCESS_TOKEN
+
+## Key Endpoints
+
+### Movies
+GET /movie/{movie_id}                          - Movie details
+GET /movie/{movie_id}/credits                  - Cast & crew
+GET /search/movie?query=...                    - Search movies by title
+GET /discover/movie                            - Filter/sort movies (30+ filters)
+GET /movie/popular                             - Popular movies
+GET /movie/top_rated                           - Top rated movies
+GET /movie/now_playing                         - Now playing in theaters
+GET /movie/upcoming                            - Upcoming releases
+
+### TV Shows
+GET /tv/{series_id}                            - TV show details
+GET /tv/{series_id}/credits                    - Cast & crew
+GET /tv/{series_id}/season/{season_number}     - Season details
+GET /tv/{series_id}/season/{n}/episode/{n}     - Episode details
+GET /search/tv?query=...                       - Search TV shows
+GET /discover/tv                               - Filter/sort TV shows
+GET /tv/popular                                - Popular TV shows
+GET /tv/top_rated                              - Top rated TV shows
+GET /tv/on_the_air                             - Currently airing shows
+
+### People
+GET /person/{person_id}                        - Person details
+GET /search/person?query=...                   - Search people
+
+### Trending
+GET /trending/all/{time_window}                - Trending movies, TV, and people
+GET /trending/movie/{time_window}              - Trending movies
+GET /trending/tv/{time_window}                 - Trending TV shows
+  time_window: "day" or "week"
+
+### Search (Multi)
+GET /search/multi?query=...                    - Search movies, TV shows, and people at once
+
+### Configuration
+GET /configuration                             - API configuration (image sizes, base URLs)
+
+## Images
+Base URL: https://image.tmdb.org/t/p/{size}/{file_path}
+
+Poster sizes:   w92, w154, w185, w342, w500, w780, original
+Backdrop sizes: w300, w780, w1280, original
+Profile sizes:  w45, w185, h632, original
+
+Example: https://image.tmdb.org/t/p/w500/path_to_image.jpg
+
+## Common Query Parameters
+- api_key       - Your API key
+- language      - ISO 639-1 language code (default: en-US)
+- page          - Page number for paginated results (default: 1)
+- region        - ISO 3166-1 country code for regional filtering
+
+## Discover Filters (examples)
+- with_genres           - Filter by genre ID(s)
+- primary_release_year  - Filter by release year
+- sort_by               - popularity.desc, vote_average.desc, release_date.desc, etc.
+- vote_count.gte        - Minimum vote count
+- with_watch_providers  - Filter by streaming service
+
+## Genre IDs (Movies)
+28=Action, 12=Adventure, 16=Animation, 35=Comedy, 80=Crime,
+99=Documentary, 18=Drama, 10751=Family, 14=Fantasy, 36=History,
+27=Horror, 10402=Music, 9648=Mystery, 10749=Romance, 878=Sci-Fi,
+10770=TV Movie, 53=Thriller, 10752=War, 37=Western
+
+## Genre IDs (TV)
+10759=Action & Adventure, 16=Animation, 35=Comedy, 80=Crime,
+99=Documentary, 18=Drama, 10751=Family, 10762=Kids, 9648=Mystery,
+10763=News, 10764=Reality, 10765=Sci-Fi & Fantasy, 10766=Soap,
+10767=Talk, 10768=War & Politics, 37=Western
+
+## Resources
+- Docs:       https://developer.themoviedb.org/docs/getting-started
+- Reference:  https://developer.themoviedb.org/reference/getting-started
+- Libraries:  https://developer.themoviedb.org/docs/wrappers-and-libraries
+- FAQ:        https://developer.themoviedb.org/docs/faq

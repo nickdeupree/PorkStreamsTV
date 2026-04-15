@@ -1,0 +1,34 @@
+2Embed.cc is backing up all the movies and tv-series please bear with us.
+
+Our Official Domains
+https://www.2embed.cc/
+https://www.2embed.skin/
+
+Embed Movies
+By IMDB ID => https://www.2embed.cc/embed/tt10676048
+By TMDB ID => https://www.2embed.cc/embed/609681
+
+Embed Tv-Series by Season and Episode Number
+By IMDB ID => https://www.2embed.cc/embedtv/tt3107288&s=1&e=1
+By TMDB ID => https://www.2embed.cc/embedtv/60735&s=1&e=1
+Embed Complete TV Seasons
+By IMDB ID => https://www.2embed.cc/embedtvfull/tt3107288
+By TMDB ID => https://www.2embed.cc/embedtvfull/60735
+
+JSON API for Movies & Tv-Shows
+
+Below is a step-by-step guide to our JSON API endpoints. All endpoints support imdb_id / tmdb_id parameters and return full JSON metadata.
+Movie Details => https://api.2embed.cc/movie?imdb_id={tt…}
+Trending Movies => https://api.2embed.cc/trending?time_window={day|week|month}&page={1…N}
+Search Movies => https://api.2embed.cc/search?q={keyword}&page={1…N}
+Similar Movies => https://api.2embed.cc/similar?imdb_id={tt…}&page={1…N}
+TV Details => https://api.2embed.cc/tv?imdb_id={tt…}
+Trending TV Shows => https://api.2embed.cc/trendingtv?time_window={day|week|month}&page={1…N}
+Search TV Shows => https://api.2embed.cc/searchtv?q={keyword}&page={1…N}
+Similar TV Shows => https://api.2embed.cc/similartv?imdb_id={tt…}&page={1…N}
+Season Details => https://api.2embed.cc/season?imdb_id={tt…}&season={1…N}
+
+
+Get movies and tv shows stream by IMDB/TMDB ID URLs, 2Embed.cc is the best movie streaming API in 2023.
+
+2Embed.cc is a continued and enhanced version of "2embed.ru" and "2embed.to" with direct and fast streaming mechanism and 2embed index only full-hd movies, tv-series whenever its available on the internet.

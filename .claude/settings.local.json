@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(./gradlew clean *)",
+      "Bash(powershell -Command \"Get-Content 'D:\\\\Code\\\\PorkStreamsTV\\\\.streamingDoc\\\\logs\\\\log1.txt' | Select-String 'matchId' | Select-Object -First 1\")",
+      "Bash(powershell *)",
+      "Bash(./gradlew assembleDebug --info)",
+      "Bash(xargs grep *)",
+      "Bash(./gradlew assembleDebug --quiet)"
+    ]
+  }
+}
